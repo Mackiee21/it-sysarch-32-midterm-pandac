@@ -11,7 +11,6 @@ const userRouter = require("./routes/user")
 
 
 
-
 const app = express()
 
 
@@ -23,13 +22,11 @@ app.use("/uploads", express.static(path.join(__dirname, 'uploads')))
 
 app.use("/", userRouter)
 app.use((req, res, next) => {
-    console.log(req.headers.authorization)
     try{
         const decoded = jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_SECRET_KEY)
         console.log(decoded)
         next()
     }catch(err){
-        console.log("ERROR AT MIDDLEWARE", err)
         return res.status(401).json({message: "Unauthorized Access"})
     }
 })

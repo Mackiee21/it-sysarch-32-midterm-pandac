@@ -7,7 +7,6 @@ const getOrdersFOR_ADMIN = async (req, res) => {
         const orders = await Order.find().exec()
         return res.status(200).json({success: true, orders})
     }catch(err){
-        console.log("ERROR AT GET ORDERS", err)
         return res.sendStatus(500)
     }
 }
@@ -19,7 +18,6 @@ const getOrders = async (req, res) => {
         return res.status(200).json({success: true, orders})
     }catch(err){
         if(err instanceof mongoose.Error.CastError) return res.status(400).json({message: "Invalid product id"})
-        console.log('ERROR AT GET ORDER', err)
         return res.sendStatus(500)
     }
 }
@@ -33,7 +31,6 @@ const addOrder = async (req, res) => {
         return res.status(201).json({success: true, order: createdOrder})
     }catch(err){
         if(err instanceof mongoose.Error.CastError) return res.status(400).json({message: "No product found under this id"})
-        console.log('ERROR AT ADD ORDER', err)
         return res.sendStatus(500)
     }
 }

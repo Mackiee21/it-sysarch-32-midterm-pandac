@@ -46,7 +46,6 @@ const loginUser = async (req, res) => {
 
         return res.status(200).json({success: true, user: foundUser, token})
     }catch(err){
-        console.log("ERROR AT LOGIN USER", err)
         return res.status(500).json({error: err})
     }
 }
@@ -56,7 +55,6 @@ const deleteUser = async (req, res) => {
         await User.findByIdAndDelete(req.params.id)
         return res.status(200).json({message: "User successfully deleted"})
     }catch(err){
-        console.log("ERROR AT DELETE USER",err)
         return res.status(500).json({error: err})
     }
 }
