@@ -11,23 +11,32 @@ const AddProduct = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { state } = useAppContext();
-
+  const [prevousFile, setPreviousFile] = useState<File>();
   const [preview, setPreview] = useState<string>(state.image as string);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target?.files?.[0] as Blob;
-    const reader = new FileReader();
+    console.log("PRODUCT CHANGED", e.target.files);
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target?.files?.[0] as File;
+      setPreviousFile(file);
+      const reader = new FileReader();
 
-    reader.onload = (e) => {
-      setPreview(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        setPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      const newFile = new DataTransfer();
+      newFile.items.add(prevousFile as File);
+      e.target.files = newFile.files;
+      console.log(e.target.files);
+    }
   };
 
-  const { mutate, isPending, error, isSuccess } = useMutation({
+  const { mutate, isPending, error } = useMutation({
     mutationFn: addProduct,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["products"] }), navigate("/");
     },
   });
 
@@ -44,7 +53,6 @@ const AddProduct = () => {
       alert(error?.response?.data.message);
     }
   }
-  if (isSuccess) navigate("/");
 
   return (
     <form

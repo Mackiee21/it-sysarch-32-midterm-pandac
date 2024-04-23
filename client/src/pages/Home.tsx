@@ -18,7 +18,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [openOptions, setOpenOptions] = useState<string | null>(null);
-  const { isPending, error, data } = useQuery({
+  const { isPending, data } = useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
     retry: !tokenExpired, //THIS MEANS MO RETRY RA SIYA IF ANG STATUS IS TOKEN EXPIRED IS TRUE (FIXED THE ISSUE RELATED TO SHOWING THE MODAL ON PAGE LOAD)
@@ -27,7 +27,6 @@ const Home = () => {
   const {
     isError: deleteError,
     error: deleteErrorProb,
-    isPending: isDeleting,
     isSuccess,
     mutate,
   } = useMutation({

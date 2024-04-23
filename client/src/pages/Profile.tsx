@@ -14,7 +14,7 @@ const Profile = () => {
   const [openOptions, setOpenOptions] = useState<string | null>(null);
   const [boundToUpdate, setBoundToUpdate] = useState<boolean>(false);
 
-  const { isPending, isError, data } = useQuery({
+  const { isPending, data } = useQuery({
     queryFn: getProducts,
     queryKey: ["products"],
   });
@@ -41,7 +41,6 @@ const Profile = () => {
   const {
     isError: deleteError,
     error: deleteErrorProb,
-    isPending: isDeleting,
     isSuccess,
     mutate,
   } = useMutation({
