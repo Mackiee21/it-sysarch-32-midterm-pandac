@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom"
 import AddProduct from "./pages/AddProduct"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
+import Profile from "./pages/Profile"
 import Signup from "./pages/Signup"
 import { useAppContext } from "./provider"
 import AuthWrapper from "./_wrappers/LoginSignupWrapper"
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/" element={<Protected />}>
               <Route index element={<Home />} />
               <Route path="/add-product" element={<AddProduct />} />
+              <Route path="/profile" element={<Profile />} />
           </Route>
         ): (
           <Route path="/" element={<AuthWrapper />}>
