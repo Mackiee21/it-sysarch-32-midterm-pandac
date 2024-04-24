@@ -1,10 +1,11 @@
 const router = require("express").Router();
-const upload = require("../multer");
+const { upload } = require("../utils");
 
 const {
   addProduct,
   getProducts,
   getProduct,
+  getProductsOfOwner,
   updateProduct,
   deleteProduct,
 } = require("../controllers/product");
@@ -20,6 +21,11 @@ router
     },
     addProduct
   );
-router.route("/:id").get(getProduct).delete(deleteProduct).patch(updateProduct);
+router
+  .route("/:id")
+  .get(getProduct) //THIS ONE DOES NOT BENIFIT FROM THE OWNER MAN AS OF NOW
+  .patch(updateProduct);
+router.route("/:owner/:id").delete(deleteProduct);
+router.route("/user/requesting-product-by/:owner_id").get(getProductsOfOwner);
 
 module.exports = router;

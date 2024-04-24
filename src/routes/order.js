@@ -7,8 +7,8 @@ const {
 } = require("../controllers/order");
 
 router.route("/").post(addOrder).get(getOrdersFOR_ADMIN);
-//get orders based on the product id returns list of orders under that product
-router.route("/:product_id").get(getOrders);
+router.route("/:user_id").get(getOrders);
+//get orders based on the product id returns list of orders under that product  DO THIS LATER MAK
 router.route("/:order_id").delete(deleteOrder);
 
 module.exports = router;

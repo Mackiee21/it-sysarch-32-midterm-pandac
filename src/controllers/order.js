@@ -12,9 +12,9 @@ const getOrdersFOR_ADMIN = async (req, res) => {
 };
 
 const getOrders = async (req, res) => {
-  const { product_id } = req.params;
+  const { user_id } = req.params;
   try {
-    const orders = await Order.find({ product: product_id }).exec();
+    const orders = await Order.find({ user_id }).exec();
     return res.status(200).json({ success: true, orders });
   } catch (err) {
     if (err instanceof mongoose.Error.CastError)

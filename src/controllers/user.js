@@ -1,8 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../schemas/user");
-const fsPromises = require("fs").promises;
-const path = require("path");
+const { deleteFile } = require("../utils");
 
 const createUser = async (req, res) => {
   try {
@@ -73,11 +72,7 @@ const updateUser = async (req, res) => {
     //delete the image nga naa sa uploads nga folder
     if (updatedInfo.prevImage !== "null" && updatedInfo.prevImage) {
       //FUNNY I DONT KNOW WHY IT GOT CONVERTED TO STRING
-      const paths = updatedInfo.prevImage.split("/").splice(-2, 2);
-      if (paths[1] !== "avatar-default.png") {
-        //do not remove the default avatar from the uploads
-        await fsPromises.unlink(path.join("src", paths[0], paths[1]));
-      }
+      await deleteFile(updatedInfo.prevImage);
     }
     updatedInfo.image = `http://localhost:3000/uploads/${req.file.filename}`;
     console.log("IMAGE TO BE SAVED", updatedInfo.image);

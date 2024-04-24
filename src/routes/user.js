@@ -5,7 +5,7 @@ const {
   loginUser,
   updateUser,
 } = require("../controllers/user");
-const upload = require("../multer");
+const { upload } = require("../utils");
 
 //DONT FORGET THE PROFILE NAME LATER
 router

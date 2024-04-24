@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteProduct, getProducts, updateProfile } from "../queries";
 import { ProductProps } from "../utils";
 import { useNavigate } from "react-router-dom";
+import { axiosPrivate } from "../axios/axiosPrivate";
 
 const Profile = () => {
   const queryClient = useQueryClient();
@@ -22,19 +23,17 @@ const Profile = () => {
     mutationFn: updateProfile,
     onSuccess: (data) => {
       profileRef.current?.classList.replace(
-        "border-slate-300",
+        "border-gray-300",
         "border-teal-500"
       );
-      profileRef.current?.classList.replace("border-2", "border-4");
       setTimeout(() => {
         profileRef.current?.classList.replace(
           "border-teal-500",
-          "border-slate-300"
+          "border-gray-300"
         );
-        profileRef.current?.classList.replace("border-4", "border-2");
+        setBoundToUpdate(false);
       }, 1000);
       update(data);
-      setBoundToUpdate(false);
     },
   });
 
@@ -50,12 +49,19 @@ const Profile = () => {
     },
   });
 
-  const handleDeleteProduct = (id: string) => {
-    mutate(id);
+  const handleDeleteProduct = (id: string, productImage: string) => {
+    mutate({ id, owner: state._id as string, image: productImage });
     if (deleteError) alert(deleteErrorProb.message);
     if (isSuccess) navigate("/");
   };
 
+  const handleChnage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files?.length > 0) {
+      setBoundToUpdate(true);
+    } else {
+      setBoundToUpdate(false);
+    }
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -75,7 +81,7 @@ const Profile = () => {
         <div className="relative">
           <div
             ref={profileRef}
-            className="w-40 h-40 rounded-full border-2 border-slate-300"
+            className="w-40 h-40 rounded-full border-4 border-gray-300"
           >
             <img
               src={state.image as string}
@@ -88,8 +94,11 @@ const Profile = () => {
             className="absolute -translate-y-1/2 flex flex-col items-center gap-1 w-full p-0.5 left-1/2 -translate-x-1/2"
           >
             {!boundToUpdate ? (
-              <button type="button" className="bg-slate-200 p-2 rounded-full">
-                <User2 size={20} />
+              <button
+                type="button"
+                className="bg-slate-200 border-2 border-gray-300 p-1.5 rounded-full"
+              >
+                <User2 size={18} color="gray" />
               </button>
             ) : (
               <button type="submit" className="bg-teal-500 p-2 rounded-full">
@@ -97,9 +106,10 @@ const Profile = () => {
               </button>
             )}
             <input
-              onChange={() => setBoundToUpdate(!boundToUpdate)}
+              onChange={handleChnage}
               type="file"
               title=""
+              id="profile"
               name="profile"
               className={`text-transparent ${
                 boundToUpdate ? "scale-0" : "scale-100"
@@ -110,21 +120,23 @@ const Profile = () => {
         <div className="p-3 flex flex-col justify-between">
           <div className="leading-5">
             <h1 className="text-lg font-medium">{state.name}</h1>
-            <p className="text-gray-700 font-normal">{state.email}</p>
+            <p className="text-gray-700 font-normal text-sm">{state.email}</p>
           </div>
           <div className="flex">
-            <div className="border-2 border-e-0 border-slate-200 text-center leading-5 py-1 px-4">
-              <h1 className="font-semibold">{state.orders.length}</h1>
+            <div className="border-2 border-e-0 border-slate-200 text-center leading-5 py-0.5 px-8">
+              <h1 className="font-semibold text-lg">{state.orders.length}</h1>
               <p className="text-xs font-medium text-gray-500">Orders</p>
             </div>
-            <div className="border-2 border-slate-200 py-1 text-center leading-5 px-4">
-              <h1 className="font-semibold">{ownerProducts?.length || 0}</h1>
+            <div className="border-2 border-slate-200 py-0.5 text-center leading-5 px-8">
+              <h1 className="font-semibold text-lg">
+                {ownerProducts?.length || 0}
+              </h1>
               <p className="text-xs font-medium text-gray-500">Products</p>
             </div>
             <a
               href="https://github.com/mackiee21"
               target="_blank"
-              className="bg-red-700 hover:opacity-80 transition-all text-white/90 grid place-items-center px-8"
+              className="bg-red-800 hover:opacity-80 transition-all text-white/90 grid place-items-center px-8"
             >
               <p>GitHub</p>
             </a>
@@ -137,7 +149,7 @@ const Profile = () => {
           <div className="grid mt-10 place-items-center">
             <p>Loading...</p>
           </div>
-        ) : (
+        ) : ownerProducts.length > 0 ? (
           <>
             <div className="home-grid">
               {ownerProducts.map((product: ProductProps) => {
@@ -170,7 +182,12 @@ const Profile = () => {
                         >
                           <div
                             className="flex items-center gap-1"
-                            onClick={() => handleDeleteProduct(product._id)}
+                            onClick={() =>
+                              handleDeleteProduct(
+                                product._id,
+                                product.productImage
+                              )
+                            }
                           >
                             <Trash2 size={16} color="red" />
                             <span className="text-sm font-normal select-none">
@@ -191,6 +208,10 @@ const Profile = () => {
               })}
             </div>
           </>
+        ) : (
+          <div className="text-center text-gray-500 font-normal">
+            Nothing to display
+          </div>
         )}
       </section>
     </section>

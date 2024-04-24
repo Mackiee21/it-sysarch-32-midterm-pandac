@@ -1,5 +1,19 @@
 const path = require("path");
 const multer = require("multer");
+const fsPromises = require("fs").promises;
+
+const deleteFile = async (imageLink) => {
+  try {
+    const paths = imageLink.split("/").splice(-2, 2);
+    if (paths[1] !== "avatar-default.png") {
+      //do not remove the default avatar from the uploads
+      await fsPromises.unlink(path.join("src", paths[0], paths[1]));
+    }
+  } catch (err) {
+    console.log("ERROR DELETING THIS FILE WHY", err);
+  }
+};
+
 //multerfication charot
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -25,4 +39,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-module.exports = upload;
+module.exports = {
+  deleteFile,
+  upload,
+};

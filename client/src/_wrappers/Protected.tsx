@@ -8,9 +8,6 @@ const Protected = () => {
   const navigate = useNavigate();
   const { state, tokenExpired, logout, setTokenExpired } = useAppContext();
 
-  // useEffect(() => {}, [state.image])
-  console.log("DO I GET RE-RENDERED?", state);
-
   return (
     <section className="flex flex-col h-dvh relative">
       {tokenExpired && (
@@ -61,17 +58,17 @@ const Protected = () => {
             {location.pathname !== "/" && (
               <button
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-1.5 p-2.5 text-sm bg-gray-500 rounded text-white"
+                className="mt-2 flex items-center gap-1.5 py-2.5 px-4 bg-red-800 rounded text-white/90"
               >
                 <ArrowLeft size={20} />
-                <span>Back</span>
+                <span className="block w-full">Back</span>
               </button>
             )}
             <Link
               to="/add-product"
               className="flex items-center gap-1.5 p-2.5 text-sm rounded  hover:bg-slate-200 transition-all"
             >
-              <div className="p-1 rounded-full bg-red-700">
+              <div className="p-1 rounded-full bg-red-800">
                 <Plus size={18} color="white" className="" />
               </div>
               <span className="font-normal">Add Product</span>

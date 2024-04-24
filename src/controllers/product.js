@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Product = require("../schemas/product");
 const User = require("../schemas/user");
+const { deleteFile } = require("../utils");
 
 const getProducts = async (req, res) => {
   try {
@@ -14,14 +15,15 @@ const getProducts = async (req, res) => {
 
 const getProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate({
+      path: "productOwner",
+      select: "image email name",
+    });
     if (!product)
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: `Could not find product with this id ${req.params.id}`,
-        });
+      return res.status(400).json({
+        success: false,
+        message: `Could not find product with this id ${req.params.id}`,
+      }); //Feel nako useless ni kai mo throw error maning mongoose if wala silay makita na id
 
     return res.status(200).json({ success: true, product });
   } catch (err) {
@@ -29,6 +31,17 @@ const getProduct = async (req, res) => {
     if (err instanceof mongoose.Error.CastError)
       return res.status(400).json({ message: "Invalid product id" });
     return res.sendStatus(500);
+  }
+};
+
+const getProductsOfOwner = async (req, res) => {
+  try {
+    const { owner_id } = req.params;
+    const products = await Product.find({ productOwner: owner_id });
+    return res.status(200).json({ success: true, products });
+  } catch (err) {
+    console.log("ERROR IN GETTING  SELLER'S PRODUCTS");
+    return res.status(500).json({ error: err });
   }
 };
 
@@ -76,9 +89,13 @@ const updateProduct = async (req, res) => {
 };
 
 const deleteProduct = async (req, res) => {
-  const { id } = req.params;
+  const { id, owner } = req.params;
+  const { imageLink } = req.query;
   try {
     await Product.deleteOne({ _id: id });
+    await User.findByIdAndUpdate(owner, { $pull: { products: id } }); //this filters all the product_ids that match with the id in the products array
+    await deleteFile(imageLink);
+    //also delete the files under ana na product
     return res.status(204).json({ success: true });
   } catch (err) {
     console.log(err);
@@ -89,6 +106,7 @@ const deleteProduct = async (req, res) => {
 module.exports = {
   getProducts,
   getProduct,
+  getProductsOfOwner,
   addProduct,
   updateProduct,
   deleteProduct,

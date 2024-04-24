@@ -16,13 +16,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "client")));
+app.use(express.static(path.join(__dirname, "../client/dist")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/auth", userRouter);
 
-app.use((req, res, next) => {
+app.use("/api", (req, res, next) => {
   try {
+    console.log("WHOS MAKING THE REQEST", req.url);
     const decoded = jwt.verify(
       req.headers.authorization.split(" ")[1],
       process.env.JWT_SECRET_KEY
@@ -51,8 +52,9 @@ app.post("/api/validate-user", async (req, res) => {
 app.use("/api/products", productRouter);
 app.use("/api/orders", orderRouter);
 
-app.get("*", (_, res) => {
-  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+app.get("*", (req, res) => {
+  console.log("HELLO THERE");
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });
 
 connectToDB().then(() => {
