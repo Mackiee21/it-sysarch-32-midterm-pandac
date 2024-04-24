@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { LucideShoppingBag } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Button from "../components/Button";
@@ -15,8 +15,9 @@ const ProductView = () => {
   const { id } = useParams();
   const { state } = useAppContext();
   const [view, setView] = useState<string>("seller");
+  const [quantity, setQuantity] = useState<number>(1);
 
-  const { isPending, isError, data } = useQuery({
+  const { isPending, data } = useQuery({
     queryKey: ["products", "product", id],
     queryFn: () => getProduct(id as string),
   });
@@ -30,6 +31,13 @@ const ProductView = () => {
     });
     btn.classList.add("bg-red-800");
     setView(btn.innerText.toLowerCase());
+  };
+
+  const handleIncrement = () => setQuantity((prev) => prev + 1);
+  const handleDecrement = () => {
+    if (quantity - 1 > 0) {
+      setQuantity((prev) => prev - 1);
+    }
   };
 
   if (isPending) return <h1>Loading...</h1>;
@@ -49,13 +57,35 @@ const ProductView = () => {
               "$" + data?.price
             )}
           </p>
-          <Button className="mt-5">Add to Cart</Button>
+          <div className="mt-5">
+            <div className="flex items-center gap-2">
+              <label htmlFor="quantity" className="">
+                Quantity:
+              </label>
+              <div className="flex items-center gap-1">
+                <ChevronLeft
+                  size={22}
+                  onClick={handleDecrement}
+                  className="cursor-pointer"
+                />
+                <p className="font-bold text-teal-600 select-none w-5 text-center">
+                  {quantity}
+                </p>
+                <ChevronRight
+                  size={22}
+                  onClick={handleIncrement}
+                  className="cursor-pointer"
+                />
+              </div>
+            </div>
+            <Button className="mt-3 select-none">Add to Cart</Button>
+          </div>
         </div>
       </div>
       <div className="mt-10 py-2 border-t-[1.5px] border-slate-200">
         {data?.productOwner._id === state._id && (
-          <div className="bg-red-800 text-white/90 py-2.5 rounded-sm mb-5 flex gap-1 items-start justify-center">
-            <p className="block align-top">Viewing as owner</p>
+          <div className="marquee-container bg-gray-500 text-white/90 py-5 rounded-sm mb-5">
+            <p className="marquee select-none">Viewing as owner</p>
           </div>
         )}
         <div className="product-view mb-5 grid grid-cols-[repeat(auto-fill,_minmax(120px,_max-content))]">
@@ -107,8 +137,9 @@ const SellerView = ({ data }: { data: ProductPropsWithOwner }) => {
 
 const SellerProducstView = ({ id }: { id: string }) => {
   // FETCH ALL THE PRODUCTS ASSOCIATED WITH THE SELLER
-  const { isPending, isError, data } = useQuery({
-    queryKey: ["products"],
+  const { isPending, data } = useQuery({
+    queryKey: ["seller-products", id], //IF I PRODUCT RANA NIMONG QUERY KEY MAK, KAI MO CAUSE NA FLICKERING
+    //TUNGOD KAI NAKA CACHED NG DATA SA "PRODUCTS" PD ABI NI BROWSER MAO RA NGA PRODUCT
     queryFn: () => getProductsOfOwner(id),
   });
   return (

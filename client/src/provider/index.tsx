@@ -52,7 +52,7 @@ const defaultContext: ContextProps = {
     _id: null,
     name: null,
     email: null,
-    token: null,
+    token: localStorage.getItem("token"),
     image: null,
     orders: [],
     products: [],

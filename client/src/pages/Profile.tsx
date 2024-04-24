@@ -4,8 +4,7 @@ import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteProduct, getProducts, updateProfile } from "../queries";
 import { ProductProps } from "../utils";
-import { useNavigate } from "react-router-dom";
-import { axiosPrivate } from "../axios/axiosPrivate";
+import { Link, useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const queryClient = useQueryClient();
@@ -77,7 +76,7 @@ const Profile = () => {
   );
   return (
     <section className="h-full">
-      <div className="flex gap-5">
+      <div className="flex items-start gap-5">
         <div className="relative">
           <div
             ref={profileRef}
@@ -117,26 +116,32 @@ const Profile = () => {
             />
           </form>
         </div>
-        <div className="p-3 flex flex-col justify-between">
+        <div className="p-3 flex flex-col justify-between gap-7 flex-1">
           <div className="leading-5">
             <h1 className="text-lg font-medium">{state.name}</h1>
             <p className="text-gray-700 font-normal text-sm">{state.email}</p>
           </div>
-          <div className="flex">
-            <div className="border-2 border-e-0 border-slate-200 text-center leading-5 py-0.5 px-8">
+          <div className="profile-grid grid grid-cols-[repeat(auto-fill,_minmax(120px,_max-content))] grid-rows-2">
+            <div className="border-2 border-e-0 border-slate-200 text-center leading-5 py-0.5">
               <h1 className="font-semibold text-lg">{state.orders.length}</h1>
               <p className="text-xs font-medium text-gray-500">Orders</p>
             </div>
-            <div className="border-2 border-slate-200 py-0.5 text-center leading-5 px-8">
+            <div className="border-2 border-slate-200 py-0.5 text-center leading-5">
               <h1 className="font-semibold text-lg">
                 {ownerProducts?.length || 0}
               </h1>
               <p className="text-xs font-medium text-gray-500">Products</p>
             </div>
+            <Link
+              to="/add-product"
+              className="grid place-items-center gap-1.5 p-2.5 text-sm bg-teal-600 text-white"
+            >
+              <span className="font-normal">Add Product</span>
+            </Link>
             <a
               href="https://github.com/mackiee21"
               target="_blank"
-              className="bg-red-800 hover:opacity-80 transition-all text-white/90 grid place-items-center px-8"
+              className="bg-red-800 hover:opacity-80 transition-all text-white/90 grid place-items-center"
             >
               <p>GitHub</p>
             </a>

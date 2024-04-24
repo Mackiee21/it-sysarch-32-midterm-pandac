@@ -23,8 +23,16 @@ hover:bg-zinc-100 transition-all`}
             <div className="py-2 px-3">
               <h1 className="font-normal ">{product.name}</h1>
               <div className="flex justify-between mt-3">
-                <LucideShoppingBag size={20} color="rgb(153,27,27)" />
-                <p className="text-black/70">${product.price}</p>
+                {product.price === 0 ? (
+                  <p className=" w-full text-center text-orange-700 font-medium">
+                    FREE
+                  </p>
+                ) : (
+                  <>
+                    <LucideShoppingBag size={20} color="rgb(153,27,27)" />
+                    <p className="text-black/70">${product.price}</p>
+                  </>
+                )}
               </div>
             </div>
           </Link>

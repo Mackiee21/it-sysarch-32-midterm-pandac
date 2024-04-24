@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useAppContext } from "../provider";
 
 const Protected = () => {
@@ -37,7 +37,7 @@ const Protected = () => {
       <Header />
       <div
         style={{ height: `calc(100dvh - 4.375rem)` }}
-        className="flex-1 grid grid-cols-[minmax(15rem,_auto)_1fr]"
+        className="flex-1 grid md:grid-cols-[minmax(15rem,_auto)_1fr]"
       >
         <aside className="h-full overflow-y-auto p-3">
           <Link
@@ -64,18 +64,9 @@ const Protected = () => {
                 <span className="block w-full">Back</span>
               </button>
             )}
-            <Link
-              to="/add-product"
-              className="flex items-center gap-1.5 p-2.5 text-sm rounded  hover:bg-slate-200 transition-all"
-            >
-              <div className="p-1 rounded-full bg-red-800">
-                <Plus size={18} color="white" className="" />
-              </div>
-              <span className="font-normal">Add Product</span>
-            </Link>
           </nav>
         </aside>
-        <main className="w-full h-full overflow-y-auto lg:p-10 md:p-5 p-2">
+        <main className="w-full h-full overflow-y-auto lg:p-10 md:p-5 p-3">
           <Outlet />
         </main>
       </div>

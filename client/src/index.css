@@ -67,3 +67,27 @@ img {
 .active-btn {
   @apply bg-red-800 text-white/90;
 }
+
+.marquee-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.marquee {
+  position: absolute;
+  right: -50px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  animation: marquee 7s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    right: 0;
+  }
+  100% {
+    right: 100%;
+  }
+}

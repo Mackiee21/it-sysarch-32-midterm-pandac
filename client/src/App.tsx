@@ -14,24 +14,22 @@ const App = () => {
     state: { token },
   } = useAppContext();
   return (
-    <div>
-      <Routes>
-        {token ? (
-          <Route path="/" element={<Protected />}>
-            <Route index element={<Home />} />
-            <Route path="/add-product" element={<AddProduct />} />
-            <Route path="/products/:id" element={<ProductView />} />
-            <Route path="/profile" element={<Profile />} />
-          </Route>
-        ) : (
-          <Route path="/" element={<AuthWrapper />}>
-            <Route index element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-          </Route>
-        )}
-        <Route path="*" element={<h1>Not Found</h1>} />
-      </Routes>
-    </div>
+    <Routes>
+      {token ? (
+        <Route path="/" element={<Protected />}>
+          <Route index element={<Home />} />
+          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/products/:id" element={<ProductView />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+      ) : (
+        <Route path="/" element={<AuthWrapper />}>
+          <Route index element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Route>
+      )}
+      <Route path="*" element={<h1>Not Found</h1>} />
+    </Routes>
   );
 };
 
